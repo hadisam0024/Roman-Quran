@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="no-referrer">
+    <title>Al-Quran Roman Urdu - Safe Reader</title>
+    
+    <style>
+        :root { --primary: #00ffcc; --bg: #05080a; }
+        body { background: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; overflow: hidden; }
+        
+        .header { background: #111; padding: 15px; border-bottom: 2px solid var(--primary); text-align: center; font-weight: bold; }
+        
+        .main-viewer { 
+            height: 75vh; display: flex; align-items: center; justify-content: center; 
+            background: #000; position: relative;
+        }
+
+        .quran-img {
+            max-height: 95%; max-width: 95%;
+            border: 1px solid rgba(0, 255, 204, 0.3);
+            box-shadow: 0 0 20px rgba(0,0,0,1);
+            object-fit: contain;
+        }
+
+        .controls { 
+            position: fixed; bottom: 0; width: 100%; background: #0a0e14; 
+            padding: 20px 0; display: flex; justify-content: space-around; align-items: center;
+        }
+
+        .btn {
+            background: var(--primary); color: #000; border: none; padding: 12px 35px;
+            font-weight: bold; cursor: pointer; border-radius: 6px; font-size: 16px;
+        }
+
+        .page-info { color: var(--primary); font-size: 18px; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="header">Al-Quran - Roman Urdu Reader</div>
+
+<div class="main-viewer">
+    <img id="displayImg" class="quran-img" src="" alt="Quran Page Loading...">
+</div>
+
+<div class="controls">
+    <button class="btn" onclick="nav(-1)">PREV</button>
+    <div class="page-info" id="pLabel">PAGE: 1</div>
+    <button class="btn" onclick="nav(1)">NEXT</button>
+</div>
+
+<script>
+    let currentP = 1; 
+    const display = document.getElementById('displayImg');
+    const label = document.getElementById('pLabel');
+
+    // Secure URL Generator
+    const buildUrl = (p) => `https://archive.org/download/quran-roman-urdu-hindi/page/n${p-1}.jpg`;
+
+    function updateEngine() {
+        // Safe Loading
+        const imgUrl = buildUrl(currentP);
+        display.src = imgUrl;
+        label.innerText = `PAGE: ${currentP}`;
+        
+        // Save progress for safety
+        localStorage.setItem('quran_page', currentP);
+    }
+
+    function nav(step) {
+        currentP += step;
+        if (currentP < 1) currentP = 1;
+        updateEngine();
+    }
+
+    // Load saved page or start from 1
+    window.onload = () => {
+        const saved = localStorage.getItem('quran_page');
+        if(saved) currentP = parseInt(saved);
+        updateEngine();
+    };
+</script>
+
+</body>
+</html>
